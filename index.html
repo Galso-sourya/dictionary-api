@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <title>Document</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+            box-sizing: border-box;    
+        }
+        body{
+            background-color: yellow;
+        }
+        .container{
+            background-color: aqua;
+            width:90vmin;
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top:50%;
+            left: 50%;
+            padding:80px 50px;
+
+        }
+    </style>
+</head>
+<body>
+    <audio id="sound"></audio>
+    <div class="container">
+<div class="search-box">
+    <input type="text" id="inp-word"/><button id="search-btn">search</button>
+</div>
+<div class="result" id="result">
+    
+</div>
+    </div>
+    <script>
+        const url="https://api.dictionaryapi.dev/api/v2/entries/en/";
+        const result=document.getElementById("result");
+        const sound=document.getElementById("sound");
+        const btn=document.getElementById("search-btn");
+        btn.addEventListener("click",()=>{
+            let inpWord=document.getElementById("inp-word").value;
+            //console.log(inpWord);
+            fetch(`${url}${inpWord}`).then((response)=>response.json()).then((data)=>
+        {
+            result.innerHTML=`<div class="word">
+        <h3>${inpWord}</h3>
+        <button onclick="playSound()"><i class="fa-solid fa-ear-listen"></i></button>
+    </div>
+    <div class="details">
+        <p>${data[0].meanings[0].partOfSpeech}</p>
+        <p>//${data[0].phonetic}//</p>
+    </div>
+    <p class="word-meaning">${data[0].meanings[0].definitions[0].definition}</p>
+    <p class="word-example">${data[0].meanings[0].definitions[0].example || ""}</p>`;
+    sound.setAttribute("src",`https:${data[0].phonetics[0].audio}`)
+        });
+        })
+        function playSound(){
+            sound.play();
+        }
+    </script>
+</body>
+</html>
